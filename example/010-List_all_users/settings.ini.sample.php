@@ -1,5 +1,5 @@
 ;<?php die(); ?>
 
 [moodle]
-url = "https://moodle.mydomain.org/webservice/rest/server.php"
-token ="kgju66bc8754bjf43bghjr784bf"
+url = "https://moodle.mysite.orgorg/webservice/rest/server.php"
+token = "jfg63obxcgsj2367fjknalvzkfbh4867"
