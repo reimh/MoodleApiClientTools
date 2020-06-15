@@ -1,7 +1,11 @@
 <?php
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+
 	echo "<h1> Testing 'MoodleApiClientTools' </h1>";
 
-	$filename= file_exists("settings.ini.php") ? "settings.ini.php" : "settings.ini.samle.php";
+	$filename= file_exists("settings.ini.php") ? "settings.ini.php" : "settings.ini.sample.php";
 	echo "Try settingsfile '$filename'.<br>\n";
 	$settings=parse_ini_file($filename,true);
 	
@@ -10,15 +14,14 @@
                 exit(0);
         }
 
-        $url=$settings["moodle"]["url"];
-        $token=$settings["moodle"]["token"];
-
-
 	//A simple Moodle API test. Requires access to the functions 'core_webservice_get_site_info' and 'core_user_get_users_by_field'
 	// 1. Try to get API-Information form moodle
 	// 2. Try to get information from an user
 
 	$loginname = isset($_GET['loginname']) ? trim($_GET['loginname']) : 'try_a_loginname';
+	$url = isset($_GET['url']) ? trim($_GET['url']) : $settings["moodle"]["url"];
+	$token = isset($_GET['token']) ? trim($_GET['token']) : $settings["moodle"]["token"];
+
 	echo "
 		<form action='' method='get' id='testapi'>
 			URL: <input type='text' name='url' size='40' value='$url'><br>

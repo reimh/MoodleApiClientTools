@@ -43,7 +43,7 @@ class MoodleApiClient
 	 *	@return The lass URL without token.
 	 */
 	public function getLastUrl(){
-		return str_replace( $this->token, "(secret-token)", $this->lastUrl;
+		return str_replace( $this->token, "(secret-token)", $this->lastUrl);
 	}
 
 	/**	Create a connection to a moodle-server
@@ -404,7 +404,8 @@ class MoodleApiClient
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);	
 		curl_setopt($curl, CURLOPT_TIMEOUT, 20);
-		
+
+		//untested
 		if($this->get_post=="POST"){
 			curl_setopt($curl, CURLOPT_POST, true);
 			curl_setopt($curl, CURLOPT_POSTFIELDS,  buildGetQuery($params));
@@ -412,8 +413,23 @@ class MoodleApiClient
 
 		//Send http request
 		$this->lastResponce = curl_exec($curl);
-		
-		return json_decode($this->lastResponce, true);
+
+		//curl request ok?
+		if(curl_errno($curl)){
+			$responce=array( 'error' => 'Curl error: ' . curl_error($curl) );
+			return $responce;
+		}
+	
+		//try a json_decode
+
+		$retval=json_decode($this->lastResponce, true);
+
+		if($retval === null OR $retval === false){
+			$responce=array( 'error' => 'json decode'.json_last_error_msg() );
+			return $responce;
+		}
+
+		return $retval;
 	}
     
     
