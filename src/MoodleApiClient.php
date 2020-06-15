@@ -8,18 +8,25 @@
 //   (at your option) any later version.
 
 
-
+/*! \class MoodleApiClient
+*    \brief A class for communicating with the Moodle WebServices
+*
+*    A Moodle server with web services enabled is required.
+*    Also necessary:
+*     * moodle-url
+*     * moodle-token
+*/
  
 class MoodleApiClient
 {
-	public $urlSite=null;
-	public $url=null;
-	public $token=null;
-	public $responce=null;
-	public $apiReturnFormat = 'json';
-	public $lastUrl=null;
-	public $lastResponce=null;
-	public $get_post="GET";
+	public 	$urlSite=null;
+	public 	$url=null;
+	private $token=null;	//token (secret)
+	public 	$responce=null;
+	public	$apiReturnFormat = 'json';
+	private	$lastUrl=null; //contains the token
+	public 	$lastResponce=null;
+	public 	$get_post="GET";
 
 	public $roles=array();
 
@@ -30,9 +37,20 @@ class MoodleApiClient
 	//		'student'        => array( 'roleid' => '5',  'shortname' => 'student'),
 	//		);
 
+	/**
+	 *	Help for troubleshooting
+	 *
+	 *	@return The lass URL without token.
+	 */
 	public function getLastUrl(){
-		return $this->lastUrl;
+		return str_replace( $this->token, "(secret-token)", $this->lastUrl;
 	}
+
+	/**	Create a connection to a moodle-server
+	 *	
+	 * @param urlSite Url from moodle-server 
+	 * @param token Secret to access the moodle-server
+	*/
 
 	public function __construct($urlSite = null, $token = null){
 		$this->urlSite = trim($urlSite);
@@ -102,7 +120,7 @@ class MoodleApiClient
 
 
 	/**
-	*	Get the Enrolment method from a moodle course
+	*	Enrol the aktive user to a course
 	*
 	*
 	**/
@@ -116,11 +134,7 @@ class MoodleApiClient
 
 		$responce=$this->sendRequest("enrol_self_enrol_user",$params);
 
-
-		print_r($responce);
 		return $responce;
-
-
 	}
 
 	/**
@@ -133,8 +147,6 @@ class MoodleApiClient
 		//Create params for http-request
 		$params = array('courses' => array(array('id' => "$courseId")));
 		$params = array('courseid' => "$courseId");
-
-		print_r($params);
 
 		//Gat a array with all enrolments for this course
 		$course_enrolements=$this->sendRequest("core_enrol_get_course_enrolment_methods",$params);
@@ -206,7 +218,7 @@ class MoodleApiClient
 
 			//Get data from new course
 			$course=$this->getCoursesByField("id", $id);
-			print_r($course);
+			//print_r($course);
 			return $course;
 
 		}
